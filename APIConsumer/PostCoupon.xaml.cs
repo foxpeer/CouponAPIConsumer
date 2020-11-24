@@ -24,7 +24,7 @@ namespace APIConsumer
         private static readonly HttpClient client = new HttpClient();
 
         private static string url = "https://foxpeer-eval-test.apigee.net/api/coupons";
-        private string apiKey = "?apikey=ykAAcqrUlfUeYoFro1lTDNuwP1SZwGuT";
+       // private string apiKey = "?apikey=ykAAcqrUlfUeYoFro1lTDNuwP1SZwGuT";
         public PostCoupon()
         {
             InitializeComponent();
@@ -45,7 +45,12 @@ namespace APIConsumer
                 }
                 string newCouponJsonString = JsonConvert.SerializeObject(newCoupon);
                 var newCouponToPost = new StringContent(newCouponJsonString, Encoding.UTF8, "application/json");
-                var postResult = client.PostAsync(url + apiKey, newCouponToPost).Result;
+                var postResult = client.PostAsync(url + APIKey.ApiKey, newCouponToPost).Result;
+                if (postResult.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new Exception("Please enter correct API key!");
+                }
+
                 MessageBox.Show(postResult.ToString());
             }
             catch(Exception ex)

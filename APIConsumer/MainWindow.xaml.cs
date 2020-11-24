@@ -25,21 +25,34 @@ namespace APIConsumer
         private static readonly HttpClient client = new HttpClient();
 
         private static string url = "https://foxpeer-eval-test.apigee.net/api/coupons";
-        private string apiKey="?apikey=ykAAcqrUlfUeYoFro1lTDNuwP1SZwGuT";
+
+
+       // private string apiKey="?apikey=ykAAcqrUlfUeYoFro1lTDNuwP1SZwGuT";
 
     
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         private void Btn_get_Click(object sender, RoutedEventArgs e)
         {
-           HttpResponseMessage responseMessage = client.GetAsync(url + apiKey).Result;           
-            Coupon[] resultList;
-            string jsonResponse = responseMessage.Content.ReadAsStringAsync().Result;
-            resultList = JsonConvert.DeserializeObject<Coupon[]>(jsonResponse);
-            gridDisplayCoupon.ItemsSource = resultList;
+            try
+            {             
+                HttpResponseMessage responseMessage = client.GetAsync(url + APIKey.ApiKey).Result;
+                if(responseMessage.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new Exception("Please enter correct API key!");
+                }
+                Coupon[] resultList;
+                string jsonResponse = responseMessage.Content.ReadAsStringAsync().Result;
+                resultList = JsonConvert.DeserializeObject<Coupon[]>(jsonResponse);
+                gridDisplayCoupon.ItemsSource = resultList;
+            }
+           catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void Btn_post_Click(object sender, RoutedEventArgs e)
@@ -67,12 +80,16 @@ namespace APIConsumer
                 if (MessageBox.Show("Do you want to delete this coupon?", "Warning", MessageBoxButton.OKCancel,
                MessageBoxImage.Warning) == MessageBoxResult.OK)
                 {
-                    var deleteResult = client.DeleteAsync(url + "/" + deleteCoupon.Id.ToString() + apiKey).Result;                
+                    var deleteResult = client.DeleteAsync(url + "/" + deleteCoupon.Id.ToString() + APIKey.ApiKey).Result;                
                      if (deleteResult.StatusCode == System.Net.HttpStatusCode.NotFound || deleteResult.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
                     {
                         throw new Exception("Please enter correct coupon ID!");
                     }
-                   MessageBox.Show(deleteResult.ToString());
+                    if (deleteResult.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        throw new Exception("Please enter correct API key!");
+                    }
+                    MessageBox.Show(deleteResult.ToString());
                 }
                 else
                 {
@@ -93,13 +110,18 @@ namespace APIConsumer
                 {
                     throw new Exception("Please enter coupon ID!");
                 }
-                HttpResponseMessage getByIDResult = client.GetAsync(url + "/" + textCouponID.Text + apiKey).Result;
+                HttpResponseMessage getByIDResult = client.GetAsync(url + "/" + textCouponID.Text + APIKey.ApiKey).Result;
                if (getByIDResult.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     throw new Exception("Coupon Not Found, Please enter correct coupon ID!");
                 }
+                if (getByIDResult.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new Exception("Please enter correct API key!");
+                }
+                
                 Coupon gettedCouponByID;
-               string jsonResponse = getByIDResult.Content.ReadAsStringAsync().Result;
+                string jsonResponse = getByIDResult.Content.ReadAsStringAsync().Result;
                 gettedCouponByID = JsonConvert.DeserializeObject<Coupon>(jsonResponse);
 
                 List<Coupon> getCouponResult = new List<Coupon>();
@@ -111,6 +133,25 @@ namespace APIConsumer
                 MessageBox.Show(ex.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
           
+        }
+
+        private void Btn_APIKey_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                APIKey.ApiKey = textAPIKey.Text;
+                MessageBox.Show("Thank you for using Coupon API.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);                
+                if (textAPIKey.Text == "" || APIKey.ApiKey == "")
+                {
+                    throw new Exception("Please enter API key !");
+                }
+                textAPIKey.Text = "";
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            
         }
     }
 }
