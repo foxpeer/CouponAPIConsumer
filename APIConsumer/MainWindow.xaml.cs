@@ -25,7 +25,7 @@ namespace APIConsumer
         private static readonly HttpClient client = new HttpClient();
 
         private static string url = "https://foxpeer-eval-test.apigee.net/api/coupons";
-        private string requestParam="?apikey=ykAAcqrUlfUeYoFro1lTDNuwP1SZwGuT";
+        private string apiKey="?apikey=ykAAcqrUlfUeYoFro1lTDNuwP1SZwGuT";
 
     
         public MainWindow()
@@ -35,7 +35,7 @@ namespace APIConsumer
 
         private void Btn_get_Click(object sender, RoutedEventArgs e)
         {
-            HttpResponseMessage responseMessage = client.GetAsync(url +requestParam).Result;
+           HttpResponseMessage responseMessage = client.GetAsync(url + apiKey).Result;           
             Coupon[] resultList;
             string jsonResponse = responseMessage.Content.ReadAsStringAsync().Result;
             resultList = JsonConvert.DeserializeObject<Coupon[]>(jsonResponse);
@@ -66,13 +66,13 @@ namespace APIConsumer
                 }
                 if (MessageBox.Show("Do you want to delete this coupon?", "Warning", MessageBoxButton.OKCancel,
                MessageBoxImage.Warning) == MessageBoxResult.OK)
-                {                    
-                    var deleteResult = client.DeleteAsync(url + "/" + deleteCoupon.Id.ToString() + requestParam).Result;
-                    if (deleteResult.StatusCode == System.Net.HttpStatusCode.NotFound || deleteResult.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
+                {
+                    var deleteResult = client.DeleteAsync(url + "/" + deleteCoupon.Id.ToString() + apiKey).Result;                
+                     if (deleteResult.StatusCode == System.Net.HttpStatusCode.NotFound || deleteResult.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
                     {
                         throw new Exception("Please enter correct coupon ID!");
                     }
-                    MessageBox.Show(deleteResult.ToString());
+                   MessageBox.Show(deleteResult.ToString());
                 }
                 else
                 {
@@ -93,13 +93,13 @@ namespace APIConsumer
                 {
                     throw new Exception("Please enter coupon ID!");
                 }
-                HttpResponseMessage getByIDResult = client.GetAsync(url + "/" + textCouponID.Text + requestParam).Result;
-                if (getByIDResult.StatusCode == System.Net.HttpStatusCode.NotFound)
+                HttpResponseMessage getByIDResult = client.GetAsync(url + "/" + textCouponID.Text + apiKey).Result;
+               if (getByIDResult.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     throw new Exception("Coupon Not Found, Please enter correct coupon ID!");
                 }
                 Coupon gettedCouponByID;
-                string jsonResponse = getByIDResult.Content.ReadAsStringAsync().Result;
+               string jsonResponse = getByIDResult.Content.ReadAsStringAsync().Result;
                 gettedCouponByID = JsonConvert.DeserializeObject<Coupon>(jsonResponse);
 
                 List<Coupon> getCouponResult = new List<Coupon>();
