@@ -25,6 +25,7 @@ namespace APIConsumer
         private static readonly HttpClient client = new HttpClient();
 
         private static string url = "https://foxpeer-eval-test.apigee.net/api/coupons";
+        private string requestParam="?apikey=ykAAcqrUlfUeYoFro1lTDNuwP1SZwGuT";
 
     
         public MainWindow()
@@ -34,7 +35,7 @@ namespace APIConsumer
 
         private void Btn_get_Click(object sender, RoutedEventArgs e)
         {
-            HttpResponseMessage responseMessage = client.GetAsync(url).Result;
+            HttpResponseMessage responseMessage = client.GetAsync(url +requestParam).Result;
             Coupon[] resultList;
             string jsonResponse = responseMessage.Content.ReadAsStringAsync().Result;
             resultList = JsonConvert.DeserializeObject<Coupon[]>(jsonResponse);
@@ -66,7 +67,7 @@ namespace APIConsumer
                 if (MessageBox.Show("Do you want to delete this coupon?", "Warning", MessageBoxButton.OKCancel,
                MessageBoxImage.Warning) == MessageBoxResult.OK)
                 {                    
-                    var deleteResult = client.DeleteAsync(url + "/" + deleteCoupon.Id.ToString()).Result;
+                    var deleteResult = client.DeleteAsync(url + "/" + deleteCoupon.Id.ToString() + requestParam).Result;
                     if (deleteResult.StatusCode == System.Net.HttpStatusCode.NotFound || deleteResult.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
                     {
                         throw new Exception("Please enter correct coupon ID!");
@@ -92,7 +93,7 @@ namespace APIConsumer
                 {
                     throw new Exception("Please enter coupon ID!");
                 }
-                HttpResponseMessage getByIDResult = client.GetAsync(url + "/" + textCouponID.Text).Result;
+                HttpResponseMessage getByIDResult = client.GetAsync(url + "/" + textCouponID.Text + requestParam).Result;
                 if (getByIDResult.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     throw new Exception("Coupon Not Found, Please enter correct coupon ID!");
