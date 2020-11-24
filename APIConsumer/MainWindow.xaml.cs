@@ -86,14 +86,30 @@ namespace APIConsumer
 
         private void Btn_getByID_Click(object sender, RoutedEventArgs e)
         {
-            HttpResponseMessage getByIDResult = client.GetAsync(url+"/"+textCouponID.Text).Result;
-            Coupon gettedCouponByID;
-            string jsonResponse = getByIDResult.Content.ReadAsStringAsync().Result;
-            gettedCouponByID= JsonConvert.DeserializeObject<Coupon>(jsonResponse);
+            try
+            {
+                if (textCouponID.Text == "")
+                {
+                    throw new Exception("Please enter coupon ID!");
+                }
+                HttpResponseMessage getByIDResult = client.GetAsync(url + "/" + textCouponID.Text).Result;
+                if (getByIDResult.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Coupon Not Found, Please enter correct coupon ID!");
+                }
+                Coupon gettedCouponByID;
+                string jsonResponse = getByIDResult.Content.ReadAsStringAsync().Result;
+                gettedCouponByID = JsonConvert.DeserializeObject<Coupon>(jsonResponse);
 
-            List<Coupon> getCouponResult = new List<Coupon>();
-            getCouponResult.Add(gettedCouponByID);
-            gridDisplayCoupon.ItemsSource = getCouponResult;
+                List<Coupon> getCouponResult = new List<Coupon>();
+                getCouponResult.Add(gettedCouponByID);
+                gridDisplayCoupon.ItemsSource = getCouponResult;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+          
         }
     }
 }
