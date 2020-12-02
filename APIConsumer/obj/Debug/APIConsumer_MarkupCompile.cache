@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-D:\CentennialWu\2020Fall\COMP306APICloud\Labs\groupproject\CouponRestAPIConsumer\APIConsumer\obj\Debug\
+C:\Users\xingl\Desktop\APIConsumer\APIConsumer\obj\Debug\
 APIConsumer
 none
 false
 DEBUG;TRACE
-D:\CentennialWu\2020Fall\COMP306APICloud\Labs\groupproject\CouponRestAPIConsumer\APIConsumer\App.xaml
+C:\Users\xingl\Desktop\APIConsumer\APIConsumer\App.xaml
 3-516598622
 
-81949083837
-14-1075298424
+9-345244029
+141009729016
 MainWindow.xaml;PostCoupon.xaml;UpdateCoupon.xaml;
 
 False

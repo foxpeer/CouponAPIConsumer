@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="APIKey.cs" />
     <Compile Include="UpdateCoupon.xaml.cs">
       <DependentUpon>UpdateCoupon.xaml</DependentUpon>
     </Compile>
